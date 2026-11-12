@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PAST LIVES — Frogger, rewritten</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%23172522'/%3E%3Ctext x='20' y='29' text-anchor='middle' font-size='27' fill='%23b7d875'%3E↗%3C/text%3E%3C/svg%3E">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+:root{--ink:#172522;--muted:#75817b;--paper:#f3f1e7;--green:#b7d673;--mint:#dce9be;--orange:#f17d54;--line:#d7d8ca;--night:#162522}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:'Space Grotesk',sans-serif;min-height:100vh;background-image:radial-gradient(#9ba58c25 .7px,transparent .7px);background-size:8px 8px}
+.wrap{width:min(1120px,100%);margin:0 auto;padding:28px 30px 24px}.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px}.brand{display:flex;align-items:center;gap:11px;font-weight:700;letter-spacing:-.04em;font-size:17px}.brand-mark{width:34px;height:34px;background:var(--ink);border-radius:11px;display:grid;place-items:center;color:var(--green);font-size:19px;transform:rotate(-5deg)}.edition{font:500 10px 'DM Mono',monospace;letter-spacing:.13em;color:#78837a;text-transform:uppercase}.layout{display:grid;grid-template-columns:minmax(0,1.42fr) minmax(280px,.78fr);gap:29px;align-items:start}.game-col{min-width:0}.game-head{display:flex;justify-content:space-between;align-items:end;margin:0 0 15px}.eyebrow{font:500 10px 'DM Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#7a877b;margin-bottom:7px}.game-head h1{font-size:clamp(28px,4vw,43px);line-height:.98;letter-spacing:-.065em;margin:0;font-weight:700}.game-head h1 span{color:#f17d54}.status-pill{display:flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:99px;padding:8px 11px;font:500 10px 'DM Mono',monospace;color:#657169;white-space:nowrap}.dot{width:7px;height:7px;border-radius:50%;background:#a5c66f;box-shadow:0 0 0 3px #a5c66f22}.screen-shell{padding:10px;background:#1a2a27;border-radius:13px;box-shadow:0 16px 35px #26332c1c,0 3px 7px #26332c15;position:relative}.screen-shell:before{content:'';position:absolute;inset:5px;border:1px solid #ffffff13;border-radius:9px;pointer-events:none}canvas{display:block;width:100%;height:auto;border-radius:7px;image-rendering:auto;touch-action:none}.under-screen{display:flex;align-items:center;justify-content:space-between;padding:11px 3px 0;color:#7b847d;font:10px 'DM Mono',monospace}.under-screen b{color:#3b4a43;font-weight:500}.run-live{display:flex;align-items:center;gap:7px}.run-live i{display:block;width:6px;height:6px;background:#e8805c;border-radius:50%;animation:pulse 1.3s infinite}@keyframes pulse{50%{opacity:.35;box-shadow:0 0 0 4px #e8805c20}}
+.panel{padding-top:2px}.story{font-size:15px;line-height:1.55;color:#5d6a62;max-width:330px;margin:0 0 20px}.story strong{color:var(--ink);font-weight:600}.stats{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:17px}.stat{background:#e8e9dc;border:1px solid #dfe0d3;border-radius:10px;padding:12px 13px}.stat-label{font:500 9px 'DM Mono',monospace;letter-spacing:.1em;color:#818b7d;text-transform:uppercase;margin-bottom:6px}.stat-value{font-size:21px;letter-spacing:-.05em;font-weight:700}.stat-value small{font-size:11px;color:#859083;letter-spacing:0;font-weight:500}.echo-card{border:1px solid var(--line);border-radius:12px;padding:14px 14px 12px;background:#f8f7f0;margin-bottom:13px}.card-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:12px;font-weight:700;letter-spacing:-.02em}.card-title .count{font:10px 'DM Mono',monospace;color:#818b7d;font-weight:400}.echo-list{display:flex;flex-direction:column;gap:8px}.echo-row{display:flex;align-items:center;gap:9px;font:10px 'DM Mono',monospace;color:#65736a}.echo-swatch{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;color:#24342d;font-size:12px}.echo-name{flex:1}.echo-name b{display:block;font-weight:500;color:#34443c;margin-bottom:2px}.echo-name small{font-size:9px;color:#97a092}.echo-state{font-size:9px;color:#98a18e}.empty-note{color:#879187;font:10px 'DM Mono',monospace;line-height:1.7}.legend{border-radius:11px;background:var(--night);color:#e5e9d8;padding:14px 15px;margin-bottom:15px}.legend-title{font:500 9px 'DM Mono',monospace;text-transform:uppercase;letter-spacing:.14em;color:#a8b99a;margin-bottom:11px}.legend-row{display:flex;align-items:center;justify-content:space-between;font:10px 'DM Mono',monospace;color:#c5cebd;margin-top:8px}.legend-row span:last-child{color:#91d46e}.controls{border-top:1px solid var(--line);padding-top:15px}.control-title{font:500 9px 'DM Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#879086;margin-bottom:10px}.control-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}.keys{display:flex;gap:4px}.key{min-width:23px;height:23px;display:grid;place-items:center;border:1px solid #d1d5c7;border-radius:5px;background:#f9f8f1;color:#58665c;font:10px 'DM Mono',monospace;box-shadow:0 2px 0 #d9dccf}.control-row span{font-size:11px;color:#6b786f}.button-row{display:flex;gap:8px;margin-top:13px}.action{border:0;border-radius:8px;padding:10px 14px;font:600 11px 'Space Grotesk',sans-serif;cursor:pointer;transition:transform .12s,background .12s}.action:active{transform:translateY(1px)}.primary{background:#dcedb8;color:#29372d;flex:1}.primary:hover{background:#c9e494}.secondary{background:#e7e8dc;color:#657167}.secondary:hover{background:#dfe2d1}.mobile-pad{display:none;grid-template-columns:repeat(3,43px);grid-template-rows:repeat(2,38px);gap:5px;margin:12px auto 0;width:max-content}.padbtn{border:1px solid #d2d7c8;background:#f5f5ec;border-radius:8px;color:#44564b;font:14px 'DM Mono',monospace;touch-action:manipulation}.padbtn[data-dir=up]{grid-column:2}.padbtn[data-dir=left]{grid-column:1;grid-row:2}.padbtn[data-dir=down]{grid-column:2;grid-row:2}.padbtn[data-dir=right]{grid-column:3;grid-row:2}.footer{display:flex;justify-content:space-between;border-top:1px solid #d9dbcf;padding-top:13px;margin-top:29px;font:9px 'DM Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:#92988b}.footer span:last-child{color:#758375}
+@media(max-width:850px){.wrap{padding:20px 20px}.layout{grid-template-columns:minmax(0,1.3fr) minmax(235px,.8fr);gap:20px}.game-head h1{font-size:34px}}
+@media(max-width:680px){.wrap{padding:17px 13px}.topbar{margin-bottom:20px}.edition{font-size:8px}.layout{grid-template-columns:1fr;gap:18px}.game-head{margin-bottom:12px}.game-head h1{font-size:clamp(30px,8vw,42px)}.panel{display:grid;grid-template-columns:1fr 1fr;gap:12px}.story{grid-column:1/-1;margin:0;font-size:13px;max-width:none}.stats{margin:0}.echo-card{margin:0}.legend{grid-column:1/-1;margin:0}.controls{grid-column:1/-1}.mobile-pad{display:grid}.under-screen{font-size:9px}.footer{margin-top:19px}}
+@media(max-width:420px){.panel{grid-template-columns:1fr}.story,.legend,.controls{grid-column:auto}.echo-card{order:2}.stats{order:1}.legend{order:3}.controls{order:4}.echo-card{min-height:100px}.status-pill{font-size:8px;padding:7px 8px}.edition{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="topbar"><div class="brand"><div class="brand-mark">↗</div><span>AFTERIMAGE ARCADE</span></div><div class="edition">A game about second chances&nbsp; / &nbsp;No. 01</div></header>
+  <main class="layout">
+    <section class="game-col">
+      <div class="game-head"><div><div class="eyebrow">A frogger with a memory</div><h1>PAST <span>LIVES</span></h1></div><div class="status-pill"><i class="dot"></i><span id="statusText">READY TO RUN</span></div></div>
+      <div class="screen-shell"><canvas id="game" width="540" height="660" aria-label="Past Lives Frogger game"></canvas></div>
+      <div class="under-screen"><span class="run-live"><i></i><b id="runLabel">MEMORY LOOP // 00</b></span><span>BEST <b id="bestMini">00</b></span></div>
+      <div class="mobile-pad" aria-label="Touch controls"><button class="padbtn" data-dir="up">↑</button><button class="padbtn" data-dir="left">←</button><button class="padbtn" data-dir="down">↓</button><button class="padbtn" data-dir="right">→</button></div>
+    </section>
+    <aside class="panel">
+      <p class="story"><strong>Every car is driven by a past run of yours.</strong> Your old moves replay as traffic—left and down make them brake, right and up make them surge. Make it home before your echoes do.</p>
+      <div class="stats"><div class="stat"><div class="stat-label">Homes reached</div><div class="stat-value"><span id="homeStat">0</span><small> / 5</small></div></div><div class="stat"><div class="stat-label">Lives left</div><div class="stat-value" id="lifeStat">♥ ♥ ♥</div></div></div>
+      <div class="echo-card"><div class="card-title">Your echo drivers <span class="count" id="echoCount">01 MEMORY</span></div><div class="echo-list" id="echoList"></div></div>
+      <div class="legend"><div class="legend-title">Your moves become their orders</div><div class="legend-row"><span>↑ &nbsp;Jump forward</span><span>TRAFFIC SURGE</span></div><div class="legend-row"><span>↓ &nbsp;Step back</span><span>HARD BRAKE</span></div><div class="legend-row"><span>← &nbsp;Step left</span><span>SOFT BRAKE</span></div><div class="legend-row"><span>→ &nbsp;Step right</span><span>ACCELERATE</span></div></div>
+      <div class="controls"><div class="control-title">Cross the road. Leave a memory.</div><div class="control-row"><div class="keys"><i class="key">↑</i><i class="key">←</i><i class="key">↓</i><i class="key">→</i></div><span>or WASD to move</span></div><div class="button-row"><button class="action primary" id="startBtn">START RUN&nbsp; ↗</button><button class="action secondary" id="resetBtn" title="Clear your saved echoes">RESET</button></div></div>
+    </aside>
+  </main>
+  <footer class="footer"><span>ALL TRAFFIC IS PERSONAL</span><span>PAST LIVES © 2025</span></footer>
+</div>
+<script>
+(()=>{
+'use strict';
+const canvas=document.getElementById('game'),ctx=canvas.getContext('2d');
+const W=540,H=660,C=60,cols=9,rows=11;
+const lanes=[
+ {row:2,dir:1,speed:83,color:'#f2a856',kind:'van'},
+ {row:3,dir:-1,speed:112,color:'#8ec2dc',kind:'sedan'},
+ {row:4,dir:1,speed:72,color:'#e78e72',kind:'truck'},
+ {row:5,dir:-1,speed:125,color:'#be9ce0',kind:'sedan'},
+ {row:6,dir:1,speed:96,color:'#d4d96b',kind:'van'},
+ {row:7,dir:-1,speed:78,color:'#8dd3ad',kind:'truck'}
+];
+const colors=['#b8d874','#ef9f62','#91c5df','#d69ed2','#ef7d63','#8bd2af'];
+const names=['FIRST LOOP','NIGHT SHIFT','SIDE STREET','GREEN LIGHT','LONG WAY HOME','LAST CHANCE'];
+const defaultMemory={id:0,name:'FIRST LOOP',color:colors[0],duration:12,events:[{t:.7,d:'right'},{t:1.4,d:'up'},{t:2.1,d:'left'},{t:3.5,d:'down'},{t:4.2,d:'right'},{t:5,d:'up'},{t:6.5,d:'left'},{t:7.1,d:'up'},{t:8.7,d:'down'},{t:9.2,d:'right'},{t:10.4,d:'up'},{t:11,d:'left'}]};
+let memories=[],session=0,best=Number(localStorage.getItem('pastLivesBest')||0),gameState='ready',player,lives,homes,elapsed,runEvents,lastTime=0,traffic=[],particles=[],shake=0,toast='',toastTime=0,audioCtx=null;
+try{const saved=JSON.parse(localStorage.getItem('pastLivesEchoes')||'[]');if(Array.isArray(saved)&&saved.length)memories=saved.slice(0,6)}catch(e){}
+if(!memories.length)memories=[defaultMemory];
+const $=id=>document.getElementById(id);
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function freshTraffic(){traffic=[];for(let i=0;i<lanes.length;i++){const lane=lanes[i];for(let j=0;j<3;j++){const width=lane.kind==='truck'?86:lane.kind==='van'?67:55;traffic.push({lane:i,x:j*205+(i%2?70:-20),w:width,h:32,color:['#efaa5b','#f17d54','#78b8cf','#d4d96b','#b58ed7','#8ed0ad'][(i+j)%6],echo:(i+j)%memories.length,pace:1,paceLeft:0,seed:j})}}}
+function resetPlayer(){player={x:4,y:10,px:4,py:10,anim:0,dead:0,invuln:.8};}
+function updateUI(){
+ $('homeStat').textContent=homes; $('lifeStat').textContent='♥ '.repeat(Math.max(0,lives)).trim()||'—';$('bestMini').textContent=String(best).padStart(2,'0');$('echoCount').textContent=`${memories.length.toString().padStart(2,'0')} ${memories.length===1?'MEMORY':'MEMORIES'}`;
+ $('runLabel').textContent=`MEMORY LOOP // ${String(session).padStart(2,'0')}`;
+ const list=$('echoList');list.innerHTML='';memories.slice(0,4).forEach((m,i)=>{const row=document.createElement('div');row.className='echo-row';row.innerHTML=`<div class="echo-swatch" style="background:${m.color||colors[i%colors.length]}">${String(i+1).padStart(2,'0')}</div><div class="echo-name"><b>${safe(m.name||names[i%names.length])}</b><small>${(m.events||[]).length} replay orders · ${Math.round(m.duration||0)}s loop</small></div><span class="echo-state">${i===0?'DRIVING':'IN TRAFFIC'}</span>`;list.appendChild(row)});
+}
+function safe(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function initGame(){session++;gameState='playing';lives=3;homes=0;homesMask=[false,false,false,false,false];elapsed=0;runEvents=[];memories.forEach(m=>{m.cursor=0;m.cycle=0});resetPlayer();freshTraffic();lastTime=performance.now();$('statusText').textContent='ECHOES ACTIVE';$('startBtn').textContent='RESTART RUN ↗';updateUI();sound(440,.055,'sine',.04);}
+function addMemory(){const duration=Math.max(8,elapsed||8);const ev=runEvents.filter(e=>e.t<duration).slice(0,80);const mem={id:Date.now(),name:names[(session-1)%names.length],color:colors[(session-1)%colors.length],duration,events:ev};memories.unshift(mem);memories=memories.slice(0,6);try{localStorage.setItem('pastLivesEchoes',JSON.stringify(memories))}catch(e){}freshTraffic();updateUI()}
+function finish(text){gameState='over';$('statusText').textContent=text.toUpperCase();$('startBtn').textContent='RUN IT BACK ↗';if( runEvents.length>0 || elapsed>1)addMemory();toast=text;toastTime=2;updateUI();sound(220,.16,'triangle',.05)}
+function action(dir){if(gameState!=='playing')return;const nx=player.x+(dir==='left'?-1:dir==='right'?1:0),ny=player.y+(dir==='up'?-1:dir==='down'?1:0);if(nx<0||nx>=cols||ny<0||ny>=rows)return;player.px=player.x;player.py=player.y;player.x=nx;player.y=ny;player.anim=.13;runEvents.push({t:elapsed,d:dir});runEvents=runEvents.slice(-100);sound(dir==='up'?580:dir==='down'?260:dir==='left'?350:480,.045,'square',.018);if(ny===0)tryHome()}
+function tryHome(){const center=player.x*C+C/2;const goal=[54,162,270,378,486].find(x=>Math.abs(center-x)<29);if(goal==null){die('MISSED THE GATE');return}const index=[54,162,270,378,486].indexOf(goal);if(homesMask[index]){die('GATE ALREADY TAKEN');return}homesMask[index]=true;homes++;spark(goal,22,'#d7eea5');sound(730,.11,'sine',.05);if(homes>=5){best=Math.max(best,session);localStorage.setItem('pastLivesBest',best);finish('ALL THE WAY HOME');return}resetPlayer();updateUI();toast='HOME SAFE';toastTime=1.2}
+let homesMask=[false,false,false,false,false];
+function die(reason){lives--;player.dead=.35;shake=9;sound(100,.22,'sawtooth',.045);if(lives<=0){finish('ECHO LOST');return}resetPlayer();toast=reason;toastTime=1.1;updateUI()}
+function spark(x,n,color){for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,s=35+Math.random()*110;particles.push({x,y:29,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:.5+Math.random()*.6,color,r:2+Math.random()*3})}}
+function sound(freq,dur,type='sine',vol=.03){try{audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(vol,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+dur);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+dur)}catch(e){}}
+function roundRect(x,y,w,h,r,fill,stroke){ctx.beginPath();ctx.roundRect(x,y,w,h,r);if(fill){ctx.fillStyle=fill;ctx.fill()}if(stroke){ctx.strokeStyle=stroke;ctx.stroke()}}
+function draw(){ctx.clearRect(0,0,W,H);drawBackground();drawHomes();drawCars();drawFrog();drawParticles();drawOverlay();}
+function drawBackground(){ctx.fillStyle='#192a26';ctx.fillRect(0,0,W,H);
+ // banks
+ ctx.fillStyle='#c9dc98';ctx.fillRect(0,58,W,60);ctx.fillRect(0,478,W,60);
+ for(let x=14;x<W;x+=36){for(let y of [65,483]){ctx.fillStyle=(Math.floor(x/36)%2?'#b8d283':'#d6e5aa');roundRect(x,y,20,3,2,ctx.fillStyle);}}
+ // entry lawn
+ ctx.fillStyle='#a9c671';ctx.fillRect(0,538,W,122);ctx.fillStyle='#8caa5d';ctx.fillRect(0,538,W,3);
+ for(let i=0;i<37;i++){const x=(i*83+24)%W,y=548+(i*47)%103;ctx.strokeStyle=i%3?'#93b467':'#d0df9e';ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(x,y+5);ctx.lineTo(x-2,y);ctx.lineTo(x+2,y-2);ctx.stroke()}
+ // sidewalk curb
+ ctx.fillStyle='#e7e1c7';ctx.fillRect(0,113,W,5);ctx.fillRect(0,473,W,5);
+ // road rows
+ for(let i=0;i<lanes.length;i++){let y=lanes[i].row*C;ctx.fillStyle=i%2?'#303b39':'#35413e';ctx.fillRect(0,y,W,C);ctx.fillStyle='#3d4945';ctx.fillRect(0,y,W,2);ctx.fillStyle='#293431';ctx.fillRect(0,y+C-2,W,2);
+   for(let x=4;x<W;x+=66){ctx.fillStyle='#788077';ctx.globalAlpha=.72;ctx.fillRect(x,y+C-3,33,2);ctx.globalAlpha=1}
+   ctx.fillStyle='#26312e';ctx.fillRect(0,y,4,C);ctx.fillRect(W-4,y,4,C);
+   // lane marker
+   ctx.fillStyle='#ffffff';ctx.globalAlpha=.045;ctx.font='500 10px DM Mono,monospace';ctx.fillText('ECHO LANE 0'+(i+1),14,y+16);ctx.globalAlpha=1;
+ }
+ // checkpoint dots
+ ctx.fillStyle='#59665a';for(let i=0;i<5;i++){ctx.beginPath();ctx.arc(54+i*108,568,3,0,Math.PI*2);ctx.fill()}
+}
+function drawHomes(){ctx.fillStyle='#24342f';ctx.fillRect(0,0,W,58);ctx.fillStyle='#a9cf72';ctx.font='500 9px DM Mono,monospace';ctx.textAlign='left';ctx.fillText('HOME / SAFE ZONE',13,14);for(let i=0;i<5;i++){const x=54+i*108;roundRect(x-28,19,56,31,9,homesMask[i]?'#a6ce71':'#344841',homesMask[i]?'#c9e897':'#51675a');ctx.fillStyle=homesMask[i]?'#24352e':'#d0dfa9';ctx.font='500 9px DM Mono,monospace';ctx.textAlign='center';ctx.fillText(homesMask[i]?'✓':'OPEN',x,38);if(homesMask[i])drawTinyFrog(x,25,8)}ctx.textAlign='left'}
+function drawCars(){traffic.forEach((car,idx)=>{const lane=lanes[car.lane],y=lane.row*C+14;const color=car.color;ctx.save();ctx.translate(car.x,y);const flip=lane.dir<0;ctx.scale(flip?-1:1,1);const echo=memories[car.echo%memories.length]||memories[0];ctx.globalAlpha=.25;roundRect(-3,-3,car.w+6,38,10,echo.color);ctx.globalAlpha=1;
+ // shadow and chassis
+ roundRect(2,17,car.w,15,5,'#182321');roundRect(0,5,car.w,24,7,color);
+ if(lane.kind==='truck'){roundRect(car.w*.56,1,car.w*.37,24,5,color);ctx.fillStyle='#fff5de';ctx.globalAlpha=.28;ctx.fillRect(car.w*.64,5,car.w*.18,8);ctx.globalAlpha=1;roundRect(5,9,car.w*.38,12,3,'#ffffff2c')}
+ else {roundRect(car.w*.18,1,car.w*.58,17,6,'#273b3b');roundRect(car.w*.25,3,car.w*.2,10,3,'#aed3c8');roundRect(car.w*.5,3,car.w*.2,10,3,'#aed3c8');}
+ ctx.fillStyle='#fff1bc';ctx.fillRect(car.w-3,10,3,5);ctx.fillStyle='#f45d51';ctx.fillRect(0,10,3,5);
+ // wheels
+ roundRect(car.w*.17,23,12,9,3,'#192421');roundRect(car.w*.68,23,12,9,3,'#192421');ctx.fillStyle='#91a097';ctx.fillRect(car.w*.22,26,4,2);ctx.fillRect(car.w*.73,26,4,2);
+ // echo ID stripe
+ ctx.globalAlpha=.9;ctx.fillStyle=echo.color;ctx.fillRect(car.w*.39,18,14,3);ctx.globalAlpha=1;
+ ctx.restore();});}
+function drawFrog(){if(!player)return;const x=player.x*C+C/2,y=player.y*C+C/2;const scale=player.anim>0?1.08:1;ctx.save();ctx.translate(x,y+Math.sin(elapsed*8)*1.3);ctx.scale(scale,scale);
+ // shadow
+ ctx.fillStyle='#17252255';ctx.beginPath();ctx.ellipse(0,14,16,5,0,0,Math.PI*2);ctx.fill();
+ // legs/body
+ roundRect(-13,-12,9,19,5,'#678b45');roundRect(4,-12,9,19,5,'#678b45');roundRect(-15,-8,30,23,10,'#b7d875');
+ // belly
+ roundRect(-8,0,16,11,6,'#dcefad');
+ // eye bumps
+ ctx.fillStyle='#b7d875';ctx.beginPath();ctx.arc(-8,-9,7,0,Math.PI*2);ctx.arc(8,-9,7,0,Math.PI*2);ctx.fill();ctx.fillStyle='#23352e';ctx.beginPath();ctx.arc(-7,-10,2.1,0,Math.PI*2);ctx.arc(9,-10,2.1,0,Math.PI*2);ctx.fill();
+ // smile
+ ctx.strokeStyle='#597948';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(1,-1,5,.3,1.5);ctx.stroke();ctx.restore();}
+function drawTinyFrog(x,y,s){ctx.fillStyle='#26382d';ctx.beginPath();ctx.arc(x,y,s,0,Math.PI*2);ctx.fill();ctx.fillStyle='#e9f4c9';ctx.beginPath();ctx.arc(x-2,y-1,1,0,Math.PI*2);ctx.arc(x+2,y-1,1,0,Math.PI*2);ctx.fill()}
+function drawParticles(){particles.forEach(p=>{ctx.globalAlpha=clamp(p.life,0,1);ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill()});ctx.globalAlpha=1}
+function drawOverlay(){if(gameState==='playing'){if(toastTime>0){ctx.fillStyle='#172522cc';roundRect(W/2-105,286,210,35,9,'#172522dd');ctx.fillStyle='#f1f0df';ctx.textAlign='center';ctx.font='500 10px DM Mono,monospace';ctx.fillText(toast,W/2,308);ctx.textAlign='left'}return}
+ ctx.fillStyle='#162522';ctx.globalAlpha=.77;ctx.fillRect(0,0,W,H);ctx.globalAlpha=1;
+ const isReady=gameState==='ready';roundRect(58,214,424,232,18,'#f3f1e7');
+ ctx.fillStyle='#809077';ctx.textAlign='center';ctx.font='500 10px DM Mono,monospace';ctx.fillText(isReady?'A FROGGER WITH A MEMORY':'THE LOOP IS OVER',W/2,251);
+ ctx.fillStyle='#23342e';ctx.font='700 36px Space Grotesk,sans-serif';ctx.fillText(isReady?'CROSS YOUR':'RUN IT',W/2,296);ctx.fillStyle='#ec8058';ctx.fillText(isReady?'OWN HISTORY':'BACK',W/2,334);
+ ctx.fillStyle='#68766b';ctx.font='400 12px Space Grotesk,sans-serif';ctx.fillText(isReady?'Your moves come back as traffic. Can you outsmart yourself?':toast||'Every attempt leaves a new driver behind.',W/2,365);
+ ctx.fillStyle='#526255';ctx.font='500 10px DM Mono,monospace';ctx.fillText('ARROW KEYS / WASD TO MOVE',W/2,397);roundRect(W/2-75,412,150,25,7,'#dcedb8');ctx.fillStyle='#34412f';ctx.font='500 9px DM Mono,monospace';ctx.fillText('PRESS START RUN ↗',W/2,428);ctx.textAlign='left';}
+function applyReplay(index,dir){const pace=dir==='up'?1.85:dir==='right'?1.5:dir==='down'?.4:.63;traffic.forEach(car=>{if(car.echo===index){car.pace=pace;car.paceLeft=.78}})}
+function update(dt){if(gameState==='playing'){elapsed+=dt;player.anim=Math.max(0,player.anim-dt);player.invuln=Math.max(0,player.invuln-dt);
+ memories.forEach((m,index)=>{const duration=Math.max(1,m.duration||8),cycle=Math.floor(elapsed/duration),at=elapsed%duration;if(m.cycle!==cycle){m.cycle=cycle;m.cursor=0}const events=m.events||[];while(m.cursor<events.length&&events[m.cursor].t<=at){applyReplay(index,events[m.cursor].d);m.cursor++}});
+ for(const car of traffic){if(car.paceLeft>0){car.paceLeft-=dt;if(car.paceLeft<=0)car.pace=1}const lane=lanes[car.lane];car.x+=lane.dir*lane.speed*car.pace*dt;if(lane.dir>0&&car.x>W+30)car.x=-car.w-20;if(lane.dir<0&&car.x<-car.w-30)car.x=W+20;
+ const cy=lane.row*C+30,px=player.x*C+C/2,py=player.y*C+C/2;if(player.invuln<=0&&Math.abs(py-cy)<23&&Math.abs(px-(car.x+car.w/2))<(car.w/2+13)){die('TAGGED BY YOUR PAST');break}}
+ if(toastTime>0)toastTime-=dt}
+ particles=particles.filter(p=>p.life>0);particles.forEach(p=>{p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=70*dt});shake=Math.max(0,shake-dt*28)}
+function loop(now){let dt=Math.min(.04,(now-lastTime)/1000||0);lastTime=now;update(dt);ctx.save();if(shake>0)ctx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);draw();ctx.restore();requestAnimationFrame(loop)}
+function keydown(e){const map={ArrowUp:'up',w:'up',W:'up',ArrowDown:'down',s:'down',S:'down',ArrowLeft:'left',a:'left',A:'left',ArrowRight:'right',d:'right',D:'right'};if(e.key===' '||e.key==='Enter'){if(gameState!=='playing'){e.preventDefault();initGame()}return}if(map[e.key]){e.preventDefault();action(map[e.key])}}
+window.addEventListener('keydown',keydown);document.querySelectorAll('.padbtn').forEach(b=>{b.addEventListener('pointerdown',e=>{e.preventDefault();action(b.dataset.dir)})});$('startBtn').addEventListener('click',initGame);$('resetBtn').addEventListener('click',()=>{if(confirm('Clear your saved echo drivers and start fresh?')){localStorage.removeItem('pastLivesEchoes');memories=[defaultMemory];session=0;homesMask=[false,false,false,false,false];gameState='ready';homes=0;lives=3;resetPlayer();freshTraffic();$('statusText').textContent='READY TO RUN';$('startBtn').textContent='START RUN ↗';updateUI()}});
+resetPlayer();homes=0;lives=3;homesMask=[false,false,false,false,false];freshTraffic();updateUI();requestAnimationFrame(t=>{lastTime=t;loop(t)});
+})();
+</script>
+</body>
+</html>
